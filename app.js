@@ -1,39 +1,57 @@
-import express from 'express'
-import puppeteer from 'puppeteer'
+const express = require('express')
+const puppeteer = require('puppeteer')
+
+const config = require('./config')
 
 const app = express()
 const PORT = process.env.PORT ? process.env.PORT : 3010
-const baseUri = 'https://maconline.com/'
+
+const utils = require('./utils')
+
+function getUtils() {
+  const {navigator} = utils
+  return {navigator}
+}
 
 app.get('/', async (req, res) => {
-  const browser = await puppeteer.launch({headless: true})
+  console.log('\n')
+  console.log('------------------------------------------')
+  const {baseUri, ...args} = config
+  const browser = await puppeteer.launch(args)
   const page = await browser.newPage()
-  await page.goto(baseUri, {waitUntil: 'load'})
-  const url = await page.url()
 
-  //start click in the browser
-  await page.click('#nav-icon')
-  await page.click('#nav-bar > li:nth-child(3) > a')
-  await page.waitFor(500)
+  try {
+    console.log('=> Launch browser 🚀')
+    await page.goto(baseUri, {waitUntil: 'load'})
+    const url = await page.url()
 
-  await page.click(
-    '#nav-bar > li:nth-child(3) > div > div > div:nth-child(1) > div > a:nth-child(1)'
-  )
-  await page.waitFor(1500)
+    console.log('=> Start clicking in the browser')
+    await page.click('#nav-icon')
+    await page.click('#nav-bar > li:nth-child(3) > a')
+    await page.waitFor(500)
 
-  //get text attributes
-  const data = await page.evaluate(() => {
-    const title = document.querySelector(
-      '#product-header > div > div > div.col-sm-6.col-sm-pull-6 > h1'
-    ).innerText
-    const description = document.querySelector(
-      '#tab-description > p:nth-child(2)'
-    ).innerText
-    return {title, description}
-  })
+    await page.click(
+      '#nav-bar > li:nth-child(3) > div > div > div:nth-child(1) > div > a:nth-child(1)'
+    )
+    await page.waitFor(1500)
 
-  res.json({url, ...data})
-  browser.close()
+    console.log('=> Get attributes from the page')
+    const data = await page.evaluate(async ({navigator}) => {
+      const elements = await navigator.map(({name, atrr}) => {
+        return {
+          [name]: document.querySelector(atrr).innerText
+        }
+      })
+
+      return elements
+    }, getUtils())
+
+    res.json({url, data})
+    browser.close()
+  } catch (err) {
+    console.log('Err:', err)
+    browser.close()
+  }
 })
 
 app.listen(PORT, () => {
