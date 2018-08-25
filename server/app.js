@@ -1,17 +1,16 @@
 const express = require('express')
+const cors = require('cors')
 const puppeteer = require('puppeteer')
 
 const config = require('./config')
 
 const app = express()
+
+app.use(cors())
+
 const PORT = process.env.PORT ? process.env.PORT : 3010
 
-const utils = require('./utils')
-
-function getUtils() {
-  const {navigator} = utils
-  return {navigator}
-}
+const {navigator} = require('./utils')
 
 app.get('/', async (req, res) => {
   console.log('\n')
@@ -36,24 +35,23 @@ app.get('/', async (req, res) => {
     await page.waitFor(1500)
 
     console.log('=> Get attributes from the page')
-    const data = await page.evaluate(async ({navigator}) => {
-      const elements = await navigator.map(({name, atrr}) => {
-        return {
-          [name]: document.querySelector(atrr).innerText
-        }
-      })
+    const data = await page.evaluate(async navigator => {
+      const elements = await navigator.map(({name, atrr}) => ({
+        [name]: document.querySelector(atrr).innerText
+      }))
 
       return elements
-    }, getUtils())
+    }, navigator)
 
     res.json({url, data})
     browser.close()
   } catch (err) {
-    console.log('Err:', err)
+    console.log('Err: ', err)
     browser.close()
   }
 })
 
-app.listen(PORT, () => {
+app.listen(PORT, err => {
+  if (err) throw new Error('=> Something is wrong ‼️')
   console.log(`=> Server running: http://localhost:${PORT}`)
 })
