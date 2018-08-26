@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Loader, Select} from 'semantic-ui-react'
+import {Button, Form, Loader, Select} from 'semantic-ui-react'
 
 import {baseUri, items} from '../utils'
 
@@ -28,21 +28,24 @@ class Item extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Select options={items} />
-        {!this.state.loading ? (
-          <Button
-            primary
-            onClick={this.responseScrapping}
-            disabled={this.state.loading}
-          >
-            Scrapping data!
-          </Button>
-        ) : (
-          <Loader active inline>
-            Loading ...{' '}
-          </Loader>
-        )}
-
+        <Form>
+          <Form.Group widths="equal">
+            <Form.Select options={items} />
+            {!this.state.loading ? (
+              <Form.Button
+                primary
+                onClick={this.responseScrapping}
+                disabled={this.state.loading}
+              >
+                Scrapping data!
+              </Form.Button>
+            ) : (
+              <Loader active inline>
+                Loading ...{' '}
+              </Loader>
+            )}
+          </Form.Group>
+        </Form>
         {this.state.data && JSON.stringify(this.state.data)}
         {this.state.message && <h3>{this.state.message}</h3>}
       </React.Fragment>

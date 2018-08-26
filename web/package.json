@@ -4,7 +4,7 @@
   "description": "sample scrapping web page with puppeter",
   "main": "app.js",
   "scripts": {
-    "start": "parcel watch public/index.html -p 3000",
+    "start": "parcel public/index.html",
     "test": "npm test"
   },
   "author": "Nicolás Flores Montenegro",
