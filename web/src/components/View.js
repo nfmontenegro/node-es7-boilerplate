@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Form, Loader, Select} from 'semantic-ui-react'
+import {Form, Loader} from 'semantic-ui-react'
 
 import {baseUri, items} from '../utils'
 
@@ -8,18 +8,27 @@ class Item extends React.Component {
     url: null,
     data: null,
     loading: false,
-    message: null
+    message: null,
+    product: 'iphonex'
+  }
+
+  handleChange = event => {
+    this.setState({
+      product: event.target.value
+    })
   }
 
   responseScrapping = async () => {
     try {
       this.setState({loading: true})
-      const response = await fetch(baseUri)
-      const {url, data} = await response.json()
+      const response = await fetch(`${baseUri}/${this.state.product}`)
+      const {data, url} = await response.json()
       this.setState({url, data, loading: !this.state.loading})
     } catch (err) {
       this.setState({
         message: 'Ops! application is crashed! 😔',
+        url: null,
+        data: null,
         loading: false
       })
     }
@@ -30,7 +39,13 @@ class Item extends React.Component {
       <React.Fragment>
         <Form>
           <Form.Group widths="equal">
-            <Form.Select options={items} />
+            <select value={this.state.product} onChange={this.handleChange}>
+              {items.map(({text, value}) => (
+                <option key={value + 1} value={value}>
+                  {text}
+                </option>
+              ))}
+            </select>
             {!this.state.loading ? (
               <Form.Button
                 primary
