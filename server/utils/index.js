@@ -1,5 +1,3 @@
-const navigator = require('./navigator.json')
+const getElementsDom = require('./item.js')
 
-module.exports = {
-  navigator
-}
+module.exports = getElementsDom

@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const scrapping = require('./scrapping')
+const scrapping = require('./scrap')
 
 const config = require('./config')
 
@@ -13,9 +13,10 @@ const PORT = process.env.PORT ? process.env.PORT : 3010
 app.get('/:value', async (req, res) => {
   console.log('=> Start scrapping')
   console.log('------------------------------------------')
+  console.log('\n')
   try {
-    console.log('Params', req.params)
     if (!req.params) throw new Error('no hay parametros')
+
     const {url, data} = await scrapping(req.params)
     res.json({url, data})
   } catch (err) {
