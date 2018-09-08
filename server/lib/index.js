@@ -1,28 +1,32 @@
 const puppeteer = require('puppeteer')
-const getElementsDom = require('../utils')
+const getElementsDom = require('./utils')
+const config = require('../config')
 
 module.exports = async function({value}) {
   try {
-    const {baseUri, ...args} = config
-    const browser = await puppeteer.launch(args)
+    const {baseUri, ...rest} = config
+    const browser = await puppeteer.launch(rest)
     const page = await browser.newPage()
     const url = await page.url()
     console.log('=> Launch browser 🚀')
-    await page.goto(baseUri, {waitUntil: 'load'})
 
+    await page.goto(baseUri, {waitUntil: 'load'})
     console.log('=> Start clicking in the browser')
+
     await page.click('#nav-icon')
     await page.click('#nav-bar > li:nth-child(3) > a')
     await page.waitFor(500)
 
-    let elementsDoms
+    let ntChild = 0
     switch (value) {
       case 'iphonex':
         await page.click(
           '#nav-bar > li:nth-child(3) > div > div > div:nth-child(1) > div > a:nth-child(1)'
         )
         await page.waitFor(1500)
-        elementsDoms = getElementsDom(1)
+        ntChild = 2
+        console.log('\n')
+        console.log(`=> item selected ntChild: 1, name ${value}`)
         break
 
       case 'iphone8':
@@ -30,22 +34,27 @@ module.exports = async function({value}) {
           '#nav-bar > li:nth-child(3) > div > div > div:nth-child(1) > div > a:nth-child(2)'
         )
         await page.waitFor(1500)
-        elementsDoms = getElementsDom(2)
+        ntChild = 1
+        console.log('\n')
+        console.log(`=> item selected ntChild: 2, name ${value}`)
         break
     }
 
     console.log('=> Get attributes from the page')
     const data = await page.evaluate(async navigator => {
-      const elements = await navigator.map(({name, atrr}) => ({
+      return await navigator.map(({name, atrr}) => ({
         [name]: document.querySelector(atrr).innerText
       }))
+    }, getElementsDom(ntChild))
 
-      return elements
-    }, elementsDoms)
     await browser.close()
     console.log('\n\n')
-    console.log(`Finish scrapping item ${value}`)
-    return {data, url}
+    console.log(`Finish scrapping item: ${value}`)
+
+    return {
+      data,
+      url
+    }
   } catch (err) {
     console.log('Error:', err)
   }

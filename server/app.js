@@ -1,8 +1,7 @@
 const express = require('express')
 const cors = require('cors')
-const scrapping = require('./scrap')
-
-const config = require('./config')
+const lib = require('./lib')
+require('dotenv').config()
 
 const app = express()
 
@@ -17,7 +16,7 @@ app.get('/:value', async (req, res) => {
   try {
     if (!req.params) throw new Error('no hay parametros')
 
-    const {url, data} = await scrapping(req.params)
+    const {url, data} = await lib(req.params)
     res.json({url, data})
   } catch (err) {
     console.log('Err: ', err)

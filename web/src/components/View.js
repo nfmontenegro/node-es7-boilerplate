@@ -5,10 +5,7 @@ import {baseUri, items} from '../utils'
 
 class Item extends React.Component {
   state = {
-    url: null,
-    data: null,
     loading: false,
-    message: null,
     product: 'iphonex'
   }
 
@@ -18,9 +15,15 @@ class Item extends React.Component {
     })
   }
 
-  responseScrapping = async () => {
+  handleSubmit = async () => {
     try {
-      this.setState({loading: true, url: null, data: null, message: null})
+      this.setState({
+        loading: true,
+        url: null,
+        data: null,
+        message: null
+      })
+
       const response = await fetch(`${baseUri}/${this.state.product}`)
       const {data, url} = await response.json()
 
@@ -54,7 +57,7 @@ class Item extends React.Component {
             </select>
             <Form.Button
               primary
-              onClick={this.responseScrapping}
+              onClick={this.handleSubmit}
               disabled={this.state.loading}
               width={6}
             >
