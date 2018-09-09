@@ -1,9 +1,9 @@
 import React from 'react'
 import {Form} from 'semantic-ui-react'
-
+import {Item} from './Item'
 import {baseUri, items} from '../utils'
 
-class Item extends React.Component {
+class View extends React.Component {
   state = {
     loading: false,
     product: 'iphonex'
@@ -66,10 +66,11 @@ class Item extends React.Component {
           </Form.Group>
         </Form>
         {this.state.data && JSON.stringify(this.state.data)}
+        <Item data={this.state.data} />
         {this.state.message && <h3>{this.state.message}</h3>}
       </React.Fragment>
     )
   }
 }
 
-export default Item
+export default View

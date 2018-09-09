@@ -18,6 +18,7 @@ module.exports = async function({value}) {
     await page.waitFor(500)
 
     let ntChild = 0
+    console.log('Value', value)
     switch (value) {
       case 'iphonex':
         await page.click(
