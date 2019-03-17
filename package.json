@@ -1,7 +1,7 @@
 {
-  "name": "scrapper",
+  "name": "boilerplate-node-server",
   "version": "1.0.0",
-  "description": "Google Scrapper",
+  "description": "Boilerplate Babel ES7",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
@@ -12,8 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^6.0.0",
-    "express": "^4.16.3",
-    "puppeteer": "^1.7.0"
+    "express": "^4.16.3"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
