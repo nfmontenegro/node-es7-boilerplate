@@ -3,6 +3,16 @@
   "version": "1.0.0",
   "description": "Boilerplate Babel ES7",
   "main": "src/index.js",
+  "keywords": [
+    "es6",
+    "es7",
+    "node",
+    "nodejs",
+    "boilerplate",
+    "babel",
+    "starter",
+    "javascript"
+  ],
   "scripts": {
     "start": "node src/index.js",
     "develop": "nodemon src/index.js --exec babel-node",
